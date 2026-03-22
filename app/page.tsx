@@ -29,10 +29,16 @@ import {
 import { Separator } from "@/components/ui/separator"
 import {
   castWatch,
+  castWhyItMatters,
   faqItems,
+  footerCopy,
+  heroContent,
   heroFacts,
+  navItems,
+  sectionCopy,
   siteConfig,
   sourceLinks,
+  statusSnapshot,
   storyAngles,
   timelineItems,
 } from "@/lib/site"
@@ -56,10 +62,20 @@ const webPageSchema = {
   name: siteConfig.title,
   url: siteConfig.url,
   description: siteConfig.description,
-  dateModified: "2026-03-21",
+  dateModified: siteConfig.updatedIso,
   inLanguage: "en-US",
-  about: ["Dune 3", "Dune: Part Three", "Dune Messiah movie"],
+  about: ["Dune 3", "Dune: Part Three", "Dune Messiah", "Dune trailer"],
 }
+
+const sectionIcons = {
+  book: BookOpenText,
+  calendar: CalendarDays,
+  clapperboard: Clapperboard,
+  radar: Radar,
+  users: Users,
+} as const
+
+const storyAngleIcons = [Sparkles, BookOpenText, Crown] as const
 
 function SectionHeading({
   eyebrow,
@@ -119,18 +135,11 @@ export default function Home() {
           </Link>
 
           <nav className="hidden items-center gap-6 text-sm text-[#d3c2b2] md:flex">
-            <a className="transition hover:text-white" href="#overview">
-              Overview
-            </a>
-            <a className="transition hover:text-white" href="#timeline">
-              Timeline
-            </a>
-            <a className="transition hover:text-white" href="#cast">
-              Cast
-            </a>
-            <a className="transition hover:text-white" href="#faq">
-              FAQ
-            </a>
+            {navItems.map((item) => (
+              <a key={item.href} className="transition hover:text-white" href={item.href}>
+                {item.label}
+              </a>
+            ))}
           </nav>
         </div>
       </header>
@@ -148,35 +157,31 @@ export default function Home() {
 
               <div className="space-y-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#a89179]">
-                  Dune 3 keyword tracker
+                  {heroContent.eyebrow}
                 </p>
                 <h1 className="text-balance font-heading text-5xl leading-none text-white sm:text-6xl lg:text-7xl">
-                  Dune 3 is officially{" "}
-                  <span className="text-[#f0c177]">Dune: Part Three</span>.
+                  {heroContent.title}
                 </h1>
               </div>
 
               <p className="text-balance max-w-2xl text-lg leading-8 text-[#dbcab9] sm:text-xl">
-                Many fans still search for <strong className="text-white">dune 3</strong>.
-                This page tracks the same movie under its official name, with the
-                public release date, cast watch, story setup, and latest update
-                signals in one place.
+                {heroContent.description}
               </p>
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row">
               <a
-                href="#timeline"
+                href={heroContent.primaryCta.href}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-[#efbc5c] px-6 py-3 text-sm font-semibold text-[#170f0a] transition hover:bg-[#f4cb83]"
               >
-                See the timeline
+                {heroContent.primaryCta.label}
                 <ArrowRight className="size-4" />
               </a>
               <a
-                href="#faq"
+                href={heroContent.secondaryCta.href}
                 className="inline-flex items-center justify-center rounded-full border border-white/12 bg-white/4 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
               >
-                Jump to the FAQ
+                {heroContent.secondaryCta.label}
               </a>
             </div>
 
@@ -207,57 +212,36 @@ export default function Home() {
             />
             <CardHeader className="relative">
               <CardDescription className="text-xs uppercase tracking-[0.28em] text-[#efca91]">
-                Status snapshot
+                {statusSnapshot.eyebrow}
               </CardDescription>
               <CardTitle className="max-w-sm text-3xl text-white">
-                The search term is old. The movie is not.
+                {statusSnapshot.title}
               </CardTitle>
             </CardHeader>
             <CardContent className="relative space-y-6 text-[#dccbbc]">
               <div className="grid gap-4 sm:grid-cols-2">
-                {[
-                  {
-                    icon: CalendarDays,
-                    label: "Release",
-                    text: "Still pointed at December 18, 2026.",
-                  },
-                  {
-                    icon: Clapperboard,
-                    label: "Marketing",
-                    text: "Public rollout is active again as of March 2026.",
-                  },
-                  {
-                    icon: BookOpenText,
-                    label: "Story",
-                    text: "The framework is Messiah, not another retread of book one.",
-                  },
-                  {
-                    icon: Radar,
-                    label: "Search intent",
-                    text: "Fans want one page for date, cast, trailer, and plot signals.",
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="rounded-3xl border border-white/8 bg-black/16 p-4"
-                  >
-                    <item.icon className="mb-3 size-5 text-[#efbc5c]" />
-                    <p className="mb-2 text-sm font-semibold text-white">{item.label}</p>
-                    <p className="text-sm leading-6 text-[#ccb8a5]">{item.text}</p>
-                  </div>
-                ))}
+                {statusSnapshot.items.map((item) => {
+                  const Icon = sectionIcons[item.icon]
+
+                  return (
+                    <div
+                      key={item.label}
+                      className="rounded-3xl border border-white/8 bg-black/16 p-4"
+                    >
+                      <Icon className="mb-3 size-5 text-[#efbc5c]" />
+                      <p className="mb-2 text-sm font-semibold text-white">{item.label}</p>
+                      <p className="text-sm leading-6 text-[#ccb8a5]">{item.text}</p>
+                    </div>
+                  )
+                })}
               </div>
 
               <div className="rounded-3xl border border-white/8 bg-white/4 p-5">
                 <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#efca91]">
-                  Quick read
+                  {statusSnapshot.quickReadLabel}
                 </p>
                 <p className="mt-3 text-base leading-7 text-[#e1d0c0]">
-                  If you search <strong className="text-white">dune 3</strong>, you are
-                  almost certainly looking for the same film that trades now call{" "}
-                  <strong className="text-white">Dune: Part Three</strong>. The title,
-                  date, and cast discussion have all matured enough that this keyword
-                  deserves a focused landing page, not a placeholder post.
+                  {statusSnapshot.quickRead}
                 </p>
               </div>
             </CardContent>
@@ -268,34 +252,32 @@ export default function Home() {
 
         <section id="overview" className="space-y-10 py-18">
           <SectionHeading
-            eyebrow="Overview"
-            title="What people usually mean when they search dune 3"
-            description="Search demand around Dune 3 is really four questions bundled together: what the movie is called, when it opens, who is in it, and whether the new chapter feels different from the first two films."
+            eyebrow={sectionCopy.overview.eyebrow}
+            title={sectionCopy.overview.title}
+            description={sectionCopy.overview.description}
           />
 
           <div className="grid gap-4 lg:grid-cols-3">
-            {storyAngles.map((item, index) => (
-              <Card
-                key={item.title}
-                className="surface-frame border border-white/8 bg-transparent"
-              >
-                <CardHeader>
-                  <div className="mb-4 flex size-11 items-center justify-center rounded-full bg-[#efbc5c]/12 text-[#efbc5c]">
-                    {index === 0 ? (
-                      <Sparkles className="size-5" />
-                    ) : index === 1 ? (
-                      <BookOpenText className="size-5" />
-                    ) : (
-                      <Crown className="size-5" />
-                    )}
-                  </div>
-                  <CardTitle className="text-2xl text-white">{item.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="text-base leading-7 text-[#d7c6b6]">
-                  {item.copy}
-                </CardContent>
-              </Card>
-            ))}
+            {storyAngles.map((item, index) => {
+              const Icon = storyAngleIcons[index]
+
+              return (
+                <Card
+                  key={item.title}
+                  className="surface-frame border border-white/8 bg-transparent"
+                >
+                  <CardHeader>
+                    <div className="mb-4 flex size-11 items-center justify-center rounded-full bg-[#efbc5c]/12 text-[#efbc5c]">
+                      <Icon className="size-5" />
+                    </div>
+                    <CardTitle className="text-2xl text-white">{item.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-base leading-7 text-[#d7c6b6]">
+                    {item.copy}
+                  </CardContent>
+                </Card>
+              )
+            })}
           </div>
         </section>
 
@@ -303,9 +285,9 @@ export default function Home() {
 
         <section id="timeline" className="space-y-10 py-18">
           <SectionHeading
-            eyebrow="Timeline"
-            title="The public Dune 3 timeline so far"
-            description="This is the cleanest version of the update trail: title confirmation, cast movement, production status, and the moment coverage shifted into public marketing mode."
+            eyebrow={sectionCopy.timeline.eyebrow}
+            title={sectionCopy.timeline.title}
+            description={sectionCopy.timeline.description}
           />
 
           <div className="grid gap-4 lg:grid-cols-2">
@@ -332,9 +314,9 @@ export default function Home() {
 
         <section id="cast" className="space-y-10 py-18">
           <SectionHeading
-            eyebrow="Cast Watch"
-            title="The names driving Dune 3 interest"
-            description="The cast conversation is part confirmation and part expectation. The important thing for searchers is knowing which names are central, which are confirmed, and why each one matters to the Messiah-era story."
+            eyebrow={sectionCopy.cast.eyebrow}
+            title={sectionCopy.cast.title}
+            description={sectionCopy.cast.description}
           />
 
           <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
@@ -365,28 +347,26 @@ export default function Home() {
           <Card className="surface-frame border border-[#efbc5c]/14 bg-transparent">
             <CardHeader>
               <CardDescription className="text-xs uppercase tracking-[0.28em] text-[#efca91]">
-                Why the cast talk matters
+                {castWhyItMatters.eyebrow}
               </CardDescription>
               <CardTitle className="text-3xl text-white">
-                Dune 3 is no longer just a release-date keyword.
+                {castWhyItMatters.title}
               </CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4 text-base leading-7 text-[#d8c7b7] lg:grid-cols-3">
-              <div className="rounded-3xl border border-white/8 bg-black/16 p-5">
-                <Users className="mb-4 size-5 text-[#efbc5c]" />
-                Returning stars give the page instant recognition and keep generic
-                “dune 3 cast” searches high-intent.
-              </div>
-              <div className="rounded-3xl border border-white/8 bg-black/16 p-5">
-                <BookOpenText className="mb-4 size-5 text-[#efbc5c]" />
-                Messiah-era casting choices tell fans how far the adaptation is
-                willing to go past the ending of Part Two.
-              </div>
-              <div className="rounded-3xl border border-white/8 bg-black/16 p-5">
-                <Clapperboard className="mb-4 size-5 text-[#efbc5c]" />
-                Trailer season converts broad interest into character-specific search
-                spikes, which is exactly what a keyword page should be ready for.
-              </div>
+              {castWhyItMatters.items.map((item) => {
+                const Icon = sectionIcons[item.icon]
+
+                return (
+                  <div
+                    key={item.copy}
+                    className="rounded-3xl border border-white/8 bg-black/16 p-5"
+                  >
+                    <Icon className="mb-4 size-5 text-[#efbc5c]" />
+                    {item.copy}
+                  </div>
+                )
+              })}
             </CardContent>
           </Card>
         </section>
@@ -395,9 +375,9 @@ export default function Home() {
 
         <section id="faq" className="space-y-10 py-18">
           <SectionHeading
-            eyebrow="FAQ"
-            title="Short answers to the biggest Dune 3 questions"
-            description="This FAQ is written for the exact queries that keep repeating around the movie: title, date, source material, cast certainty, and where the public campaign stands right now."
+            eyebrow={sectionCopy.faq.eyebrow}
+            title={sectionCopy.faq.title}
+            description={sectionCopy.faq.description}
           />
 
           <Card className="surface-frame border border-white/8 bg-transparent">
@@ -422,9 +402,9 @@ export default function Home() {
 
         <section className="space-y-10 py-18">
           <SectionHeading
-            eyebrow="Sources"
-            title="Public reports this page is anchored to"
-            description="A keyword page should still be transparent. These links are the backbone for the title, release, cast, and production statements summarized above."
+            eyebrow={sectionCopy.sources.eyebrow}
+            title={sectionCopy.sources.title}
+            description={sectionCopy.sources.description}
           />
 
           <div className="grid gap-4 lg:grid-cols-2">
@@ -461,14 +441,9 @@ export default function Home() {
 
       <footer className="border-t border-white/8">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-6 py-8 text-sm text-[#b7a28b] sm:px-8 lg:px-10">
-          <p>
-            {siteConfig.name} tracks the movie most people search as{" "}
-            <strong className="text-white">dune 3</strong>.
-          </p>
-          <p>
-            Last refreshed on <strong className="text-white">{siteConfig.lastUpdated}</strong>.
-            Official title: <strong className="text-white">Dune: Part Three</strong>.
-          </p>
+          {footerCopy.map((line) => (
+            <p key={line}>{line}</p>
+          ))}
         </div>
       </footer>
     </div>
